@@ -70,7 +70,7 @@ const FilterContacts = contacts.filter(contact =>
     
 useEffect(() => {
   dispatch(fetchContacts())
-}, [])
+}, [dispatch])
 
 
 
