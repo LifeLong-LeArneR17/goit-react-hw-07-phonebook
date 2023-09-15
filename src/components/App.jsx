@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setContacts, setFilter, setName, setNumber } from "redux/contactsSlice.js";
+import {setFilter, setName, setNumber } from "redux/contactsSlice.js";
 import { nanoid } from "nanoid";
 import { Filter } from "./Filter/Filter";
 import { ContactsList } from "./Contacts/ContactsList/ContactsList";
