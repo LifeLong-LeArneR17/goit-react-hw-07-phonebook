@@ -1,52 +1,52 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setContacts, setFilter, setName, setNumber } from "redux/reducer";
+import { setContacts, setFilter, setName, setNumber } from "redux/contactsSlice.js";
 import { nanoid } from "nanoid";
 import { Filter } from "./Filter/Filter";
 import { ContactsList } from "./Contacts/ContactsList/ContactsList";
-// const LOCAL_KEY = "contacts"
+import { contactsFromStore, filterFromStore, nameFromStore, numberFromStore } from "../redux/selector"
+import { fetchContacts, addContact, deleteContact } from "redux/operations";
 
 export function  App () {
-  const dispatch = useDispatch()
-  const contactsFromStore = useSelector(state => state.contactsData.contacts);
-  const filterFromStore = useSelector(state => state.contactsData.filter);
-  const nameFromStore = useSelector(state => state.contactsData.name);
-  const numberFromStore = useSelector(state => state.contactsData.number);
-  
-  
-
-const handleChange = evt => {
-  const {name, value} = evt.target;
-  switch (name) {
-    case 'name':
-      dispatch(setName(value))
-      break;
-      case 'number':
-        dispatch(setNumber(value))
+  const dispatch = useDispatch();
+  const contacts = useSelector(contactsFromStore);
+  const filter = useSelector(filterFromStore);
+  const name = useSelector(nameFromStore);
+  const phone = useSelector(numberFromStore);
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    switch (name) {
+      case 'name':
+        dispatch(setName(value));
         break;
-    default:
-      break;
-  }
-}
+      case 'phone':
+        dispatch(setNumber(value));
+        break;
+      default:
+        break;
+    }
+  };
+  
+  
   
 
 const handleSubmit = evt => {
     evt.preventDefault();
   
   
-      const isDuplicate = contactsFromStore.some(contact => contact.name === nameFromStore);
+      const isDuplicate = contacts.some(contact => contact.name === name);
       if(isDuplicate) {
-      alert(`Contact with name "${nameFromStore}" already exists!`);
+      alert(`Contact with name "${name}" already exists!`);
       return; // Прерываем выполнение функции
     }
      const NewContact = {
         // Создаем объект контакта
       id: nanoid(),
-      name: nameFromStore,
-      number: numberFromStore,
+      name: name,
+      phone: phone,
      };
   
-     dispatch(setContacts([...contactsFromStore, NewContact]));
+    dispatch(addContact(NewContact))
      dispatch(setName(''));
      dispatch(setNumber(''))
   }
@@ -57,17 +57,25 @@ const handleChangeFilter = evt => {
 
  const onChangeDelete = evt => {
     const contactId = evt.target.id;
-  dispatch(setContacts(contactsFromStore.filter(el => el.id !== contactId)))
+  dispatch(deleteContact(contactId))
   }
 
 
 
 
 
-const FilterContacts = contactsFromStore.filter(contact =>
-  contact.name.toLowerCase().trim().includes(filterFromStore?.toLowerCase() || '')
+const FilterContacts = contacts.filter(contact =>
+  contact.name.toLowerCase().trim().includes(filter?.toLowerCase() || '')
 );
     
+useEffect(() => {
+  dispatch(fetchContacts())
+}, [])
+
+
+
+
+
     return (
       <>
       <form onSubmit={handleSubmit}>
@@ -78,22 +86,22 @@ const FilterContacts = contactsFromStore.filter(contact =>
   pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
   title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
   required
-  value={nameFromStore}
+  value={name}
   onChange={handleChange}
 />
 <h2>Number</h2>
 <input
   type="tel"
-  name="number"
+  name="phone"
   pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
   title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
   required
-  value={numberFromStore}
+  value={phone}
   onChange={handleChange}
 />
 <button type="submit" >Add contact</button>
 <h2>Contacts</h2>
-    <Filter onChange={handleChangeFilter} filter={filterFromStore}/>
+    <Filter onChange={handleChangeFilter} filter={filter}/>
     <ContactsList contacts={FilterContacts} onChangeDelete={onChangeDelete}/>
 
     </form>
