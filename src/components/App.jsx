@@ -39,14 +39,14 @@ const handleSubmit = evt => {
       alert(`Contact with name "${name}" already exists!`);
       return; // Прерываем выполнение функции
     }
-     const NewContact = {
+     const newContact = {
         // Создаем объект контакта
       id: nanoid(),
       name: name,
       phone: phone,
      };
   
-    dispatch(addContact(NewContact))
+    dispatch(addContact(newContact))
      dispatch(setName(''));
      dispatch(setNumber(''))
   }
