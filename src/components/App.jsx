@@ -60,27 +60,7 @@ const handleChangeFilter = evt => {
   dispatch(setContacts(contactsFromStore.filter(el => el.id !== contactId)))
   }
 
-  // function saveContactsToLocalStorage(contactsFromStore) {
-  //   localStorage.setItem(LOCAL_KEY, JSON.stringify(contactsFromStore));
-  // }
-  
-  // function loadContactsFromLocalStorage() {
-  //   const localData = localStorage.getItem(LOCAL_KEY);
-  //   return localData ? JSON.parse(localData) : [];
-  // }
-  
 
-
-
-// useEffect(() => {
-//   saveContactsToLocalStorage(contactsFromStore);
-// },[contactsFromStore]);
- 
-
-// useEffect(() => {
-//   const localData = loadContactsFromLocalStorage();
-//   dispatch(setContacts(localData));
-// }, []);
 
 
 
